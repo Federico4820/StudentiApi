@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentiApi.Models;
 
-namespace EcommerceApi.Data
+namespace StudentiApi.Data
 {
     public class ApplicationDbContext : DbContext
     {
