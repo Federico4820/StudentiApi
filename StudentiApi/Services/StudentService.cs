@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using StudentiApi.Models;
 using StudentiApi.DTOs;
+using StudentiApi.Controllers;
+using StudentiApi.DTOs.StudentInfo;
 
 namespace StudentiApi.Services
 {
@@ -41,7 +43,11 @@ namespace StudentiApi.Services
                     Name = addStudentRequestDto.Name,
                     Surname = addStudentRequestDto.Surname,
                     Email = addStudentRequestDto.Email,
-                    Signed = DateTime.Now
+                    Signed = DateTime.Now,
+                    StudentInfo = new StudentInfo()
+                    {
+                        Description = addStudentRequestDto.Description
+                    }
                 };
 
                 _context.Students.Add(student);
@@ -56,7 +62,8 @@ namespace StudentiApi.Services
                     Name = student.Name,
                     Surname = student.Surname,
                     Email = student.Email,
-                    Signed = student.Signed
+                    Signed = student.Signed,
+                    StudentInfo = new StudentInfoDto() { Description = student.StudentInfo.Description}
                 };
 
                 //_context.Students.Add(student);
@@ -69,20 +76,11 @@ namespace StudentiApi.Services
             }
         }
 
-        public async Task<List<StudentDto>?> GetStudentsAsync()
+        public async Task<List<Student>?> GetStudentsAsync()//attento
         {
             try
             {
-                var students = await _context.Students.ToListAsync();
-                return students.Select(student => new StudentDto
-                {
-                    Id = student.Id,
-                    Name = student.Name,
-                    Surname = student.Surname,
-                    Email = student.Email,
-                    Signed = student.Signed
-                    
-                }).ToList();
+                return await _context.Students.Include(s => s.StudentInfo).ToListAsync();
             }
             catch(Exception ex)
             {

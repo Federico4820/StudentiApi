@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using StudentiApi.DTOs;
+using StudentiApi.DTOs.StudentInfo;
 using StudentiApi.Models;
 using StudentiApi.Services;
 
@@ -25,6 +26,20 @@ namespace StudentiApi.Controllers
         public async Task<IActionResult> GetStudents()
         {
             var studentList = await _studentService.GetStudentsAsync();
+            var studentsDto = studentList.Select(p => new StudentDto()
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Surname = p.Surname,
+                Email = p.Email,
+                Signed = p.Signed,
+                StudentInfo = new StudentInfoDto()
+                {
+                    Id = p.StudentInfo.Id,
+                    Description = p.StudentInfo.Description,
+                    Created = p.StudentInfo.Created,
+                }
+            });
 
             if (studentList == null)
             {
@@ -43,12 +58,12 @@ namespace StudentiApi.Controllers
 
             var text = count == 1 ? $"{count} studente trovato" : $"{count} studenti trovati";
 
-            _logger.LogInformation($"Requesting customers info: {JsonSerializer.Serialize(studentList, new JsonSerializerOptions() { WriteIndented = true })}");
+            _logger.LogInformation($"Requesting customers info: {JsonSerializer.Serialize(studentsDto, new JsonSerializerOptions() { WriteIndented = true })}");
 
             return Ok(new
             {
                 message = text,
-                products = studentList
+                products = studentsDto
             });
         }
 

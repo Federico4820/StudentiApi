@@ -13,5 +13,7 @@ namespace StudentiApi.DTOs
         [Required]
         [StringLength(50)]
         public required string Email { get; set; }
+
+        public required string Description { get; set; }
     }
 }

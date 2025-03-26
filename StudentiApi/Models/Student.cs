@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudentiApi.Models
 {
@@ -17,5 +18,7 @@ namespace StudentiApi.Models
         public required string Email { get; set; }
 
         public DateTime Signed { get; set; } = DateTime.Now;
+        [InverseProperty("Student")]
+        public StudentInfo StudentInfo { get; set; }
     }
 }
